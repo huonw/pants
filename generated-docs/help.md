@@ -1,0 +1,21 @@
+```
+./pants help [args]
+```
+Display usage message.
+
+Backend: <span style="color: purple"><code>pants.goal</code></span>
+Config section: <span style="color: purple"><code>[help]</code></span>
+
+## Basic options
+
+None
+
+## Advanced options
+
+None
+
+## Deprecated options
+
+None
+
+

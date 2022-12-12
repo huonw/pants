@@ -1,0 +1,21 @@
+```
+./pants help-all [args]
+```
+Print a JSON object containing all help info.
+
+Backend: <span style="color: purple"><code>pants.goal</code></span>
+Config section: <span style="color: purple"><code>[help-all]</code></span>
+
+## Basic options
+
+None
+
+## Advanced options
+
+None
+
+## Deprecated options
+
+None
+
+

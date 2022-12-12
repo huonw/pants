@@ -1,0 +1,23 @@
+```
+./pants experimental-deploy [args]
+```
+Perform a deployment process.
+
+Backend: <span style="color: purple"><code>pants.core</code></span>
+Config section: <span style="color: purple"><code>[experimental-deploy]</code></span>
+
+## Basic options
+
+None
+
+## Advanced options
+
+None
+
+## Deprecated options
+
+None
+
+
+## Related subsystems
+[environments-preview](environments-preview.md), [filter](filter.md)

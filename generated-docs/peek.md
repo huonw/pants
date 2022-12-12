@@ -1,0 +1,54 @@
+```
+./pants peek [args]
+```
+Display BUILD target info
+
+Backend: <span style="color: purple"><code>pants.backend.project_info</code></span>
+Config section: <span style="color: purple"><code>[peek]</code></span>
+
+## Basic options
+
+<div style="color: purple">
+
+### `output_file`
+
+  <code>--peek-output-file=&lt;path&gt;</code><br>
+  <code>PANTS_PEEK_OUTPUT_FILE</code><br>
+</div>
+<div style="padding-left: 2em;">
+<span style="color: green">default: <code>None</code></span>
+
+<br>
+
+Output the goal's stdout to this file. If unspecified, outputs to stdout.
+</div>
+<br>
+
+<div style="color: purple">
+
+### `exclude_defaults`
+
+  <code>--[no-]peek-exclude-defaults</code><br>
+  <code>PANTS_PEEK_EXCLUDE_DEFAULTS</code><br>
+</div>
+<div style="padding-left: 2em;">
+<span style="color: green">default: <code>False</code></span>
+
+<br>
+
+Whether to leave off values that match the target-defined default values.
+</div>
+<br>
+
+
+## Advanced options
+
+None
+
+## Deprecated options
+
+None
+
+
+## Related subsystems
+[environments-preview](environments-preview.md), [filter](filter.md)

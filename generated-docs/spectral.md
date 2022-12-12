@@ -1,0 +1,65 @@
+
+A flexible JSON/YAML linter for creating automated style guides (https://github.com/stoplightio/spectral).
+
+Backend: <span style="color: purple"><code>pants.backend.experimental.openapi.lint.spectral</code></span>
+Config section: <span style="color: purple"><code>[spectral]</code></span>
+
+## Basic options
+
+<div style="color: purple">
+
+### `skip`
+
+  <code>--[no-]spectral-skip</code><br>
+  <code>PANTS_SPECTRAL_SKIP</code><br>
+</div>
+<div style="padding-left: 2em;">
+<span style="color: green">default: <code>False</code></span>
+
+<br>
+
+If true, don't use Spectral when running `./pants lint`.
+</div>
+<br>
+
+<div style="color: purple">
+
+### `args`
+
+  <code>--spectral-args=&quot;[&lt;shell_str&gt;, &lt;shell_str&gt;, ...]&quot;</code><br>
+  <code>PANTS_SPECTRAL_ARGS</code><br>
+</div>
+<div style="padding-left: 2em;">
+<span style="color: green">default: <code>[]</code></span>
+
+<br>
+
+Arguments to pass directly to Spectral, e.g. `--spectral-args='--fail-severity=warn'`.
+</div>
+<br>
+
+
+## Advanced options
+
+<div style="color: purple">
+
+### `version`
+
+  <code>--spectral-version=&lt;str&gt;</code><br>
+  <code>PANTS_SPECTRAL_VERSION</code><br>
+</div>
+<div style="padding-left: 2em;">
+<span style="color: green">default: <code>@stoplight/spectral-cli@6.5.1</code></span>
+
+<br>
+
+Version string for the tool in the form package@version (e.g. prettier@2.6.2)
+</div>
+<br>
+
+
+## Deprecated options
+
+None
+
+
