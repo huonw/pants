@@ -3,7 +3,7 @@ Options used to locate Python interpreters used by all Pants backends.
 
 This subsystem controls where and how Pants will locate Python, but beyond that it does not control which Python interpreter versions are actually used for your code: see the `python` subsystem for that.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.helm, pants.backend.experimental.java, pants.backend.experimental.java.lint.google_java_format, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.openapi.lint.spectral, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.backend.shell, pants.core</code></span>
 Config section: <span style="color: purple"><code>[python-bootstrap]</code></span>
 
 ## Basic options

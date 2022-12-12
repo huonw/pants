@@ -1,7 +1,7 @@
 
 Options for interacting with Docker.
 
-Backend: <span style="color: purple"><code>pants.backend.docker</code></span>
+Backend: <span style="color: purple"><code>pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.helm</code></span>
 Config section: <span style="color: purple"><code>[docker]</code></span>
 
 ## Basic options

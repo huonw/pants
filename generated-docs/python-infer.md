@@ -1,7 +1,7 @@
 
 Options controlling which dependencies will be inferred for Python targets.
 
-Backend: <span style="color: purple"><code>pants.backend.python</code></span>
+Backend: <span style="color: purple"><code>pants.backend.awslambda.python, pants.backend.experimental.python, pants.backend.google_cloud_function.python, pants.backend.python</code></span>
 Config section: <span style="color: purple"><code>[python-infer]</code></span>
 
 ## Basic options

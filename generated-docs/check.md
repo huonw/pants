@@ -3,7 +3,7 @@
 ```
 Run type checking or the lightest variant of compilation available for a language.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.core, pants.core</code></span>
 Config section: <span style="color: purple"><code>[check]</code></span>
 
 ## Basic options

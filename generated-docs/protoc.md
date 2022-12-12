@@ -1,7 +1,7 @@
 
 The protocol buffer compiler (https://developers.google.com/protocol-buffers).
 
-Backend: <span style="color: purple"><code>pants.backend.codegen.protobuf.python</code></span>
+Backend: <span style="color: purple"><code>pants.backend.codegen.protobuf.python, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala</code></span>
 Config section: <span style="color: purple"><code>[protoc]</code></span>
 
 ## Basic options

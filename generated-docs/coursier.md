@@ -1,7 +1,7 @@
 
 A dependency resolver for the Maven ecosystem. (https://get-coursier.io/)
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.java, pants.backend.experimental.java.lint.google_java_format, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 Config section: <span style="color: purple"><code>[coursier]</code></span>
 
 ## Basic options

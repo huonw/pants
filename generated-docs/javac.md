@@ -1,7 +1,7 @@
 
 The javac Java source compiler.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.java</code></span>
 Config section: <span style="color: purple"><code>[javac]</code></span>
 
 ## Basic options

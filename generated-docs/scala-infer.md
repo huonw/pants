@@ -1,7 +1,7 @@
 
 Options controlling which dependencies will be inferred for Scala targets.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.scala</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 Config section: <span style="color: purple"><code>[scala-infer]</code></span>
 
 ## Basic options

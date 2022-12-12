@@ -4,7 +4,7 @@ See language-specific docs:
     Python: https://www.pantsbuild.org/v2.16/docs/protobuf-python
     Go: https://www.pantsbuild.org/v2.16/docs/protobuf-go
 
-Backend: <span style="color: purple"><code>pants.backend.codegen.protobuf.python</code></span>
+Backend: <span style="color: purple"><code>pants.backend.codegen.protobuf.python, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala</code></span>
 
 ## <code>source</code>
 
@@ -62,7 +62,7 @@ Whether to generate gRPC code or not.
 
 <span style="color: purple">type: <code>str | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala</code></span>
 
 The major version of the JDK that this target should be built with. If not defined, will default to `[jvm].default_source_jdk`.
 
@@ -70,7 +70,7 @@ The major version of the JDK that this target should be built with. If not defin
 
 <span style="color: purple">type: <code>str | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala</code></span>
 
 The resolve from `[jvm].resolves` to use when compiling this target.
 

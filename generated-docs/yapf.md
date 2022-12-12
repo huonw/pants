@@ -1,7 +1,7 @@
 
 A formatter for Python files (https://github.com/google/yapf).
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.build_files.fmt.yapf, pants.backend.python.lint.yapf, pants.core</code></span>
 Config section: <span style="color: purple"><code>[yapf]</code></span>
 
 ## Basic options

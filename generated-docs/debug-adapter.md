@@ -3,7 +3,7 @@ Options used to configure and launch a Debug Adapter server.
 
 See https://microsoft.github.io/debug-adapter-protocol/ for more information.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.python, pants.core</code></span>
 Config section: <span style="color: purple"><code>[debug-adapter]</code></span>
 
 ## Basic options

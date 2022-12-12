@@ -1,7 +1,7 @@
 
 The Jar Jar Abrams tool (https://github.com/eed3si9n/jarjar-abrams)
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 Config section: <span style="color: purple"><code>[jarjar]</code></span>
 
 ## Basic options

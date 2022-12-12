@@ -1,7 +1,7 @@
 
 Options for Golang support.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.go</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 Config section: <span style="color: purple"><code>[golang]</code></span>
 
 ## Basic options

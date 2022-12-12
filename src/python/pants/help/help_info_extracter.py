@@ -602,7 +602,7 @@ class HelpInfoExtracter:
         if not providers:
             return ""
         # Pick the shortest backend name.
-        return sorted(providers, key=len)[0]
+        return ", ".join(sorted(providers))
 
     @staticmethod
     def maybe_cleandoc(doc: str | None) -> str | None:

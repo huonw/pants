@@ -1,7 +1,7 @@
 
 Options controlling which dependencies will be inferred for Java targets.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 Config section: <span style="color: purple"><code>[java-infer]</code></span>
 
 ## Basic options

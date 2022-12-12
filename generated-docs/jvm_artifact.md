@@ -4,7 +4,7 @@ That is, an artifact identified by its `group`, `artifact`, and `version` compon
 
 Each artifact is associated with one or more resolves (a logical name you give to a lockfile). For this artifact to be used by your first-party code, it must be associated with the resolve(s) used by that code. See the `resolve` field.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.scala</code></span>
 
 ## <code>artifact</code>
 

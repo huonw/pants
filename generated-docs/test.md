@@ -3,7 +3,7 @@
 ```
 Run tests.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.go, pants.backend.experimental.helm, pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.python, pants.backend.shell, pants.core</code></span>
 Config section: <span style="color: purple"><code>[test]</code></span>
 
 ## Basic options

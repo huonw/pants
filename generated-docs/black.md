@@ -1,7 +1,7 @@
 
 The Black Python code formatter (https://black.readthedocs.io/).
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.build_files.fmt.black, pants.backend.python.lint.black, pants.core</code></span>
 Config section: <span style="color: purple"><code>[black]</code></span>
 
 ## Basic options

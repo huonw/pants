@@ -1,7 +1,7 @@
 
 Used to parse Dockerfile build specs to infer their dependencies.
 
-Backend: <span style="color: purple"><code>pants.backend.docker</code></span>
+Backend: <span style="color: purple"><code>pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.helm</code></span>
 Config section: <span style="color: purple"><code>[dockerfile-parser]</code></span>
 
 ## Basic options

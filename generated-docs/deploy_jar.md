@@ -2,7 +2,7 @@ A `jar` file with first and third-party code bundled for deploys.
 
 The JAR will contain class files for both first-party code and third-party dependencies, all in a common directory structure.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.scala</code></span>
 
 ## <code>main</code>
 

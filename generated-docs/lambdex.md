@@ -1,7 +1,7 @@
 
 A tool for turning .pex files into Function-as-a-Service artifacts (https://github.com/pantsbuild/lambdex).
 
-Backend: <span style="color: purple"><code>pants.backend.awslambda.python</code></span>
+Backend: <span style="color: purple"><code>pants.backend.awslambda.python, pants.backend.google_cloud_function.python</code></span>
 Config section: <span style="color: purple"><code>[lambdex]</code></span>
 
 ## Basic options

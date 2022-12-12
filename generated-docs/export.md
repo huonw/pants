@@ -3,7 +3,7 @@
 ```
 Export Pants data for use in other tools, such as IDEs.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.python, pants.core</code></span>
 Config section: <span style="color: purple"><code>[export]</code></span>
 
 ## Basic options

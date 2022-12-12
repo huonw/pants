@@ -1,7 +1,7 @@
 
 Options controlling which dependencies will be inferred for Kotlin targets.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.kotlin</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint</code></span>
 Config section: <span style="color: purple"><code>[kotlin-infer]</code></span>
 
 ## Basic options

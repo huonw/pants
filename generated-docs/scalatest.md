@@ -1,7 +1,7 @@
 
 The Scalatest test framework (https://www.scalatest.org/)
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.scala</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 Config section: <span style="color: purple"><code>[scalatest]</code></span>
 
 ## Basic options

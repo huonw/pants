@@ -1,7 +1,7 @@
 
 The Kotlin programming language (https://kotlinlang.org/).
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.kotlin</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint</code></span>
 Config section: <span style="color: purple"><code>[kotlinc]</code></span>
 
 ## Basic options

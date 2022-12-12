@@ -1,7 +1,7 @@
 
 Configuration for roots of source trees.
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.codegen.thrift.apache.python, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.python, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.flake8, pants.backend.python.lint.pylint, pants.backend.python.typecheck.mypy, pants.core</code></span>
 Config section: <span style="color: purple"><code>[source]</code></span>
 
 ## Basic options

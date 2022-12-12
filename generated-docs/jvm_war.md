@@ -1,6 +1,6 @@
 A JSR 154 "web application archive" (or "war") with first-party and third-party code bundled for deploys in Java Servlet containers.
 
-Backend: <span style="color: purple"><code>pants.backend.experimental.java</code></span>
+Backend: <span style="color: purple"><code>pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.scala</code></span>
 
 ## <code>descriptor</code>
 

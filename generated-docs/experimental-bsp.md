@@ -3,7 +3,7 @@
 ```
 Setup repository for Build Server Protocol (https://build-server-protocol.github.io/).
 
-Backend: <span style="color: purple"><code>pants.core</code></span>
+Backend: <span style="color: purple"><code>pants.core, pants.goal</code></span>
 Config section: <span style="color: purple"><code>[experimental-bsp]</code></span>
 
 ## Basic options

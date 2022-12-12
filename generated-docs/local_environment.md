@@ -38,7 +38,7 @@ Use `./pants list --documented ::` to see all targets with descriptions.
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.docker</code></span>
+backend: <span style="color: green"><code>pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.helm</code></span>
 
 Overrides the default value from the option `[docker].env_vars` when this environment target is active.
 
@@ -46,7 +46,7 @@ Overrides the default value from the option `[docker].env_vars` when this enviro
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.docker</code></span>
+backend: <span style="color: green"><code>pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.helm</code></span>
 
 Overrides the default value from the option `[docker].executable_search_paths` when this environment target is active.
 
@@ -73,7 +73,7 @@ Overrides the default value from the option `[go-generate].env_vars` when this e
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_c_flags` when this environment target is active.
 
@@ -81,7 +81,7 @@ Overrides the default value from the option `[golang].cgo_c_flags` when this env
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_cxx_flags` when this environment target is active.
 
@@ -89,7 +89,7 @@ Overrides the default value from the option `[golang].cgo_cxx_flags` when this e
 
 <span style="color: purple">type: <code>str | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_fortran_binary_name` when this environment target is active.
 
@@ -97,7 +97,7 @@ Overrides the default value from the option `[golang].cgo_fortran_binary_name` w
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_fortran_flags` when this environment target is active.
 
@@ -105,7 +105,7 @@ Overrides the default value from the option `[golang].cgo_fortran_flags` when th
 
 <span style="color: purple">type: <code>str | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_gcc_binary_name` when this environment target is active.
 
@@ -113,7 +113,7 @@ Overrides the default value from the option `[golang].cgo_gcc_binary_name` when 
 
 <span style="color: purple">type: <code>str | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_gxx_binary_name` when this environment target is active.
 
@@ -121,7 +121,7 @@ Overrides the default value from the option `[golang].cgo_gxx_binary_name` when 
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_linker_flags` when this environment target is active.
 
@@ -129,7 +129,7 @@ Overrides the default value from the option `[golang].cgo_linker_flags` when thi
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].cgo_tool_search_paths` when this environment target is active.
 
@@ -137,7 +137,7 @@ Overrides the default value from the option `[golang].cgo_tool_search_paths` whe
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].go_search_paths` when this environment target is active.
 
@@ -145,7 +145,7 @@ Overrides the default value from the option `[golang].go_search_paths` when this
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.go</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.go</code></span>
 
 Overrides the default value from the option `[golang].subprocess_env_vars` when this environment target is active.
 
@@ -153,7 +153,7 @@ Overrides the default value from the option `[golang].subprocess_env_vars` when 
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.backend.experimental.java</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.java, pants.backend.experimental.java.lint.google_java_format, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt</code></span>
 
 Overrides the default value from the option `[jvm].global_options` when this environment target is active.
 
@@ -161,7 +161,7 @@ Overrides the default value from the option `[jvm].global_options` when this env
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.helm, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.core</code></span>
 
 Overrides the default value from the option `[pex].executable_search_paths` when this environment target is active.
 
@@ -169,7 +169,7 @@ Overrides the default value from the option `[pex].executable_search_paths` when
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.helm, pants.backend.experimental.java, pants.backend.experimental.java.lint.google_java_format, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.openapi.lint.spectral, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.backend.shell, pants.core</code></span>
 
 Overrides the default value from the option `[python-bootstrap].names` when this environment target is active.
 
@@ -177,7 +177,7 @@ Overrides the default value from the option `[python-bootstrap].names` when this
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.codegen.protobuf.scala, pants.backend.experimental.helm, pants.backend.experimental.java, pants.backend.experimental.java.lint.google_java_format, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.openapi.lint.spectral, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.backend.shell, pants.core</code></span>
 
 Overrides the default value from the option `[python-bootstrap].search_path` when this environment target is active.
 
@@ -185,7 +185,7 @@ Overrides the default value from the option `[python-bootstrap].search_path` whe
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.helm, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.core</code></span>
 
 Overrides the default value from the option `[python-native-code].cpp_flags` when this environment target is active.
 
@@ -193,7 +193,7 @@ Overrides the default value from the option `[python-native-code].cpp_flags` whe
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.helm, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.core</code></span>
 
 Overrides the default value from the option `[python-native-code].ld_flags` when this environment target is active.
 
@@ -209,7 +209,7 @@ Overrides the default value from the option `[shell-setup].executable_search_pat
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.awslambda.python, pants.backend.codegen.protobuf.python, pants.backend.docker, pants.backend.docker.lint.hadolint, pants.backend.experimental.codegen.protobuf.go, pants.backend.experimental.helm, pants.backend.experimental.python, pants.backend.experimental.python.lint.add_trailing_comma, pants.backend.experimental.python.lint.autoflake, pants.backend.experimental.python.lint.pyupgrade, pants.backend.experimental.terraform, pants.backend.google_cloud_function.python, pants.backend.python, pants.backend.python.lint.bandit, pants.backend.python.lint.black, pants.backend.python.lint.docformatter, pants.backend.python.lint.flake8, pants.backend.python.lint.isort, pants.backend.python.lint.pylint, pants.backend.python.lint.yapf, pants.backend.python.typecheck.mypy, pants.core</code></span>
 
 Overrides the default value from the option `[subprocess-environment].env_vars` when this environment target is active.
 
@@ -226,7 +226,7 @@ For example, you may tag some test targets with 'integration_test' so that you c
 
 <span style="color: purple">type: <code>Iterable[str] | None</code></span>
 <span style="color: green">default: <code>None</code></span>
-backend: <span style="color: green"><code>pants.core</code></span>
+backend: <span style="color: green"><code>pants.backend.experimental.codegen.protobuf.java, pants.backend.experimental.go, pants.backend.experimental.helm, pants.backend.experimental.java, pants.backend.experimental.kotlin, pants.backend.experimental.kotlin.lint.ktlint, pants.backend.experimental.scala, pants.backend.experimental.scala.lint.scalafmt, pants.backend.python, pants.backend.shell, pants.core</code></span>
 
 Overrides the default value from the option `[test].extra_env_vars` when this environment target is active.
 

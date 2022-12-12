@@ -1,7 +1,7 @@
 
 A linter for shell scripts.
 
-Backend: <span style="color: purple"><code>pants.backend.shell</code></span>
+Backend: <span style="color: purple"><code>pants.backend.shell, pants.backend.shell.lint.shellcheck</code></span>
 Config section: <span style="color: purple"><code>[shellcheck]</code></span>
 
 ## Basic options
