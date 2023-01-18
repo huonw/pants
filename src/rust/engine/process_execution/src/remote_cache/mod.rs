@@ -28,6 +28,8 @@ use crate::{
 };
 
 mod reapi;
+#[cfg(test)]
+mod tests;
 
 #[derive(Clone, Copy, Debug, strum_macros::EnumString)]
 #[strum(serialize_all = "snake_case")]

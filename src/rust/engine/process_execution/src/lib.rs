@@ -77,8 +77,6 @@ pub mod remote;
 pub mod remote_tests;
 
 pub mod remote_cache;
-#[cfg(test)]
-mod remote_cache_tests;
 
 extern crate uname;
 
