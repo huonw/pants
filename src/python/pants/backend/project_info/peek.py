@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
-from dataclasses import asdict, dataclass, is_dataclass
+from dataclasses import asdict, dataclass, field, is_dataclass, replace
+from json import encoder
 from typing import Any, Iterable, Mapping
 
 from typing_extensions import Protocol, runtime_checkable
@@ -67,7 +69,16 @@ class TargetData:
     expanded_sources: Snapshot | None
     expanded_dependencies: tuple[str, ...]
 
-    def to_dict(self, exclude_defaults: bool = False) -> dict:
+    intransitive_fingerprint: str = field(default="", init=False)
+
+    def __post_init__(self) -> None:
+        d = self.to_dict(exclude_defaults=False, include_intransitive_fingerprint=False)
+        s = json.dumps(d, cls=_PeekJsonEncoder)
+        super().__setattr__("intransitive_fingerprint", hashlib.sha256(s.encode()).hexdigest())
+
+    def to_dict(
+        self, exclude_defaults: bool = False, include_intransitive_fingerprint: bool = True
+    ) -> dict:
         nothing = object()
         fields = {
             (
@@ -81,6 +92,9 @@ class TargetData:
         if self.expanded_sources is not None:
             fields["sources"] = self.expanded_sources.files
             fields["sources_fingerprint"] = self.expanded_sources.digest.fingerprint
+
+        if include_intransitive_fingerprint:
+            fields["intransitive_fingerprint"] = self.intransitive_fingerprint
 
         return {
             "address": self.target.address.spec,

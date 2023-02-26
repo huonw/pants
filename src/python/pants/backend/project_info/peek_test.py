@@ -13,6 +13,7 @@ from pants.core.target_types import ArchiveTarget, FilesGeneratorTarget, FileTar
 from pants.engine.addresses import Address
 from pants.engine.fs import Digest, Snapshot
 from pants.engine.rules import QueryRule
+from pants.engine.target import BoolField, Target
 from pants.testutil.rule_runner import RuleRunner
 
 
@@ -56,6 +57,7 @@ def _snapshot(fingerprint: str, files: tuple[str, ...]) -> Snapshot:
                     "address": "example:files_target",
                     "target_type": "files",
                     "dependencies": [],
+                    "intransitive_fingerprint": "3afdda3c69dc4fad703125b1d1c464a2128f6ae17abed885b7fa2140acf0a18c",
                     "overrides": {
                       "('foo.txt',)": {
                         "tags": [
@@ -99,6 +101,7 @@ def _snapshot(fingerprint: str, files: tuple[str, ...]) -> Snapshot:
                     "target_type": "files",
                     "dependencies": [],
                     "description": null,
+                    "intransitive_fingerprint": "f89e0621719b6369f8202991e9006ac9d1c5353c3a217b7d40c25a9d2e37e3d1",
                     "overrides": null,
                     "sources": [
                       "foo.txt"
@@ -148,6 +151,7 @@ def _snapshot(fingerprint: str, files: tuple[str, ...]) -> Snapshot:
                     "address": "example:files_target",
                     "target_type": "files",
                     "dependencies": [],
+                    "intransitive_fingerprint": "e014859eb40796a4353aacc05d02bac9b9d4e86274c873b648425644f178b257",
                     "sources": [],
                     "sources_fingerprint": "0000000000000000000000000000000000000000000000000000000000000000",
                     "sources_raw": [
@@ -168,6 +172,7 @@ def _snapshot(fingerprint: str, files: tuple[str, ...]) -> Snapshot:
                       "example:files_target"
                     ],
                     "format": "zip",
+                    "intransitive_fingerprint": "d6c6f4fc35d5c60b0816d8ecd5cf5d0b8a43e0db734636d2da85c024c2d58b5e",
                     "output_path": "my-archive.zip"
                   }
                 ]
@@ -180,6 +185,32 @@ def _snapshot(fingerprint: str, files: tuple[str, ...]) -> Snapshot:
 def test_render_targets_as_json(expanded_target_infos, exclude_defaults, expected_output):
     actual_output = peek.render_json(expanded_target_infos, exclude_defaults)
     assert actual_output == expected_output
+
+
+def test_intransitive_fingerprint_field_defaults():
+    class Fld(BoolField):
+        alias = "fld"
+        default = True
+
+    class Tgt(Target):
+        alias = "tgt"
+        help = "foo"
+        core_fields = (Fld,)
+
+    def make(fields: dict[str, bool]) -> TargetData:
+        return TargetData(
+            target=Tgt(fields, Address("adr")), expanded_sources=None, expanded_dependencies=()
+        )
+
+    without_defaults = make({})
+    explicit_defaults = make({Fld.alias: True})
+    non_default = make({Fld.alias: False})
+
+    assert (
+        without_defaults.intransitive_fingerprint
+        == explicit_defaults.intransitive_fingerprint
+        != non_default.intransitive_fingerprint
+    )
 
 
 @pytest.fixture
