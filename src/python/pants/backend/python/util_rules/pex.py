@@ -568,9 +568,10 @@ async def build_pex(
     request: PexRequest, python_setup: PythonSetup, pex_subsystem: PexSubsystem
 ) -> BuildPexResult:
     """Returns a PEX with the given settings."""
+    temporary_output = "__output.pex",
     argv = [
         "--output-file",
-        request.output_filename,
+        temporary_output,
         "--no-emit-warnings",
         *request.additional_args,
     ]
@@ -641,6 +642,8 @@ async def build_pex(
         log_output = result.stderr.decode()
         if log_output:
             logger.info("%s", log_output)
+
+    RenameDi
 
     digest = (
         await Get(
