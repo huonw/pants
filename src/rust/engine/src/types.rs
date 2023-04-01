@@ -16,6 +16,7 @@ pub struct Types {
   pub digest_entries: TypeId,
   pub path_globs: TypeId,
   pub merge_digests: TypeId,
+  pub rename_path: TypeId,
   pub add_prefix: TypeId,
   pub remove_prefix: TypeId,
   pub create_digest: TypeId,

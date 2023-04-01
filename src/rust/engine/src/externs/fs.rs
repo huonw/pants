@@ -26,6 +26,7 @@ pub(crate) fn register(m: &PyModule) -> PyResult<()> {
   m.add_class::<PyFileDigest>()?;
   m.add_class::<PySnapshot>()?;
   m.add_class::<PyMergeDigests>()?;
+  m.add_class::<PyRenamePath>()?;
   m.add_class::<PyAddPrefix>()?;
   m.add_class::<PyRemovePrefix>()?;
   m.add_class::<PyFilespecMatcher>()?;
@@ -291,6 +292,51 @@ impl PyMergeDigests {
   }
 
   fn __richcmp__(&self, other: &PyMergeDigests, op: CompareOp, py: Python) -> PyObject {
+    match op {
+      CompareOp::Eq => (self == other).into_py(py),
+      CompareOp::Ne => (self != other).into_py(py),
+      _ => py.NotImplemented(),
+    }
+  }
+}
+
+#[pyclass(name = "RenamePath")]
+#[derive(Debug, PartialEq, Eq)]
+pub struct PyRenamePath {
+  pub digest: DirectoryDigest,
+  pub src: PathBuf,
+  pub dst: PathBuf
+}
+
+#[pymethods]
+impl PyRenamePath {
+  #[new]
+  fn __new__(digest: PyDigest, src: PathBuf, dst: PathBuf) -> Self {
+    Self {
+      digest: digest.0,
+      src,
+      dst,
+    }
+  }
+
+  fn __hash__(&self) -> u64 {
+    let mut s = DefaultHasher::new();
+    self.digest.as_digest().hash.prefix_hash().hash(&mut s);
+    self.src.hash(&mut s);
+    self.dst.hash(&mut s);
+    s.finish()
+  }
+
+  fn __repr__(&self) -> String {
+    format!(
+      "RenamePath('{}', {}, {})",
+      PyDigest(self.digest.clone()),
+      self.src.display(),
+      self.dst.display()
+    )
+  }
+
+  fn __richcmp__(&self, other: &PyRenamePath, op: CompareOp, py: Python) -> PyObject {
     match op {
       CompareOp::Eq => (self == other).into_py(py),
       CompareOp::Ne => (self != other).into_py(py),

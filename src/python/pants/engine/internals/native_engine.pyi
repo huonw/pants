@@ -126,6 +126,19 @@ class MergeDigests:
     def __hash__(self) -> int: ...
     def __repr__(self) -> str: ...
 
+class RenamePath:
+    """A request to rename a specific file/directory within a digest
+
+    Example:
+
+        result = await Get(Digest, RenamePath(input_digest, "old/name", "new_name"))
+    """
+
+    def __init__(self, digest: Digest, src: str, dst: str) -> None: ...
+    def __eq__(self, other: RenamePath | Any) -> bool: ...
+    def __hash__(self) -> int: ...
+    def __repr__(self) -> str: ...
+
 class AddPrefix:
     """A request to add the specified prefix path to every file and directory in the digest.
 

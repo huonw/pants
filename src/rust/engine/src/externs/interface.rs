@@ -212,6 +212,7 @@ impl PyTypes {
       digest_entries: TypeId::new(digest_entries),
       path_globs: TypeId::new(path_globs),
       merge_digests: TypeId::new(py.get_type::<externs::fs::PyMergeDigests>()),
+      rename_path: TypeId::new(py.get_type::<externs::fs::PyRenamePath>()),
       add_prefix: TypeId::new(py.get_type::<externs::fs::PyAddPrefix>()),
       remove_prefix: TypeId::new(py.get_type::<externs::fs::PyRemovePrefix>()),
       create_digest: TypeId::new(create_digest),

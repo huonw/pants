@@ -307,6 +307,31 @@ fn add_prefix_request_to_digest(
   .boxed()
 }
 
+fn rename_path_request_to_digest(
+  context: Context,
+  args: Vec<Value>,
+) -> BoxFuture<'static, NodeResult<Value>> {
+  async move {
+    let (digest, prefix) = Python::with_gil(|py| {
+      let py_rename_path = (*args[0])
+        .as_ref(py)
+        .extract::<PyRef<PyRenamePath>>()
+        .map_err(|e| throw(format!("{e}")))?;
+      let src = RelativePath::new(&py_rename_path.src)
+        .map_err(|e| throw(format!("The `src` must be relative: {e}")))?;
+      let dst = RelativePath::new(&py_rename_path.src)
+        .map_err(|e| throw(format!("The `dst` must be relative: {e}")))?;
+      let res: NodeResult<(DirectoryDigest, RelativePath, RelativePath)> =
+        Ok((py_rename_path.digest.clone(), src, dst));
+      res
+    })?;
+    let digest = context.core.store().add_prefix(digest, &prefix).await?;
+    let gil = Python::acquire_gil();
+    let value = Snapshot::store_directory_digest(gil.python(), digest)?;
+    Ok(value)
+  }
+  .boxed()
+}
 fn digest_to_snapshot(context: Context, args: Vec<Value>) -> BoxFuture<'static, NodeResult<Value>> {
   let store = context.core.store();
   async move {
