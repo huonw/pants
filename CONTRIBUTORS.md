@@ -238,6 +238,7 @@ Created as part of the release process.
 + Pierre Chevalier
 + Pierre DAL-PRA
 + Qicheng Ma
++ Raph Estrada
 + Raúl Cuza
 + Rhuan Barreto
 + Rhys Madigan

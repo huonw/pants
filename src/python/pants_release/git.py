@@ -76,5 +76,5 @@ def github_pr_create(
         f"--label=category:{category}",
         *(f"--label={label}" for label in labels),
         f"--assignee={assignee}",
-        *(f"--reviewers={reviewer}" for reviewer in reviewers),
+        *(f"--reviewer={reviewer}" for reviewer in reviewers),
     )
