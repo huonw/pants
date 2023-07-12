@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import logging
+import os
 import re
 import sys
 from collections import defaultdict
@@ -14,16 +15,19 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+import github
 import requests
 from packaging.version import Version
-from pants_release.common import CONTRIBUTORS_PATH, VERSION_PATH, sorted_contributors
-from pants_release.git import git, git_fetch
+from pants_release.common import CONTRIBUTORS_PATH, VERSION_PATH, die, sorted_contributors
+from pants_release.git import MAIN_REPO_SLUG, git, git_fetch
 
 from pants.util.strutil import softwrap
 
 logger = logging.getLogger(__name__)
 
-BASE_PR_BODY = softwrap(
+GH_TOKEN_VAR_NAME = "GH_TOKEN"
+
+PR_COMMENT_BODY = softwrap(
     """
     This PR is release preparation. Please read over the release notes and make adjustments for
     clarity for users, such as:
@@ -62,7 +66,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--publish",
         action="store_true",
-        help="Publish the changes: create a branch, commit, push, and create a pull request",
+        help=f"Publish the changes: create a branch, commit, push, and create a pull request. Set `{GH_TOKEN_VAR_NAME}` env var to an access token.",
     )
     return parser
 
@@ -281,6 +285,21 @@ def update_version(release_info: ReleaseInfo) -> None:
 
 
 def commit_and_pr(release_info: ReleaseInfo, formatted: Formatted, release_manager: str) -> None:
+    token = os.environ.get(GH_TOKEN_VAR_NAME)
+    if not token:
+        die(
+            f"Failed to find credentials in {GH_TOKEN_VAR_NAME} env var, please set this and try again"
+        )
+
+    try:
+        gh = github.Github(auth=github.Auth.Token(token))
+        user = gh.get_user()
+        repo = gh.get_repo(MAIN_REPO_SLUG)
+    except Exception as e:
+        die(f"Failed to get Github info; is your token valid? {e}")
+    else:
+        print(f"Opening pull request as: @{user.login}", file=sys.stderr)
+
     title = f"Prepare {release_info.version}"
     branch = f"automation/release/{release_info.version}"
 
@@ -288,6 +307,16 @@ def commit_and_pr(release_info: ReleaseInfo, formatted: Formatted, release_manag
     git("add", str(VERSION_PATH), str(CONTRIBUTORS_PATH), str(release_info.notes_file_name()))
     git("commit", "-m", title)
     git("push", "origin", "HEAD")
+
+    pr = repo.create_pull(
+        title=title,
+        body=formatted.internal,
+        base="main",
+        head=branch,
+    )
+    pr.add_to_assignees(release_manager)
+    pr.add_to_labels("automation:release-prep", "category:internal")
+    pr.create_issue_comment(PR_COMMENT_BODY)
 
 
 def main() -> None:
