@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import logging
+import os
 import re
 import sys
 from collections import defaultdict
@@ -14,16 +15,19 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+import github
 import requests
 from packaging.version import Version
-from pants_release.common import CONTRIBUTORS_PATH, VERSION_PATH, sorted_contributors
-from pants_release.git import git, git_fetch
+from pants_release.common import CONTRIBUTORS_PATH, VERSION_PATH, die, sorted_contributors
+from pants_release.git import MAIN_REPO_SLUG, git, git_fetch
 
 from pants.util.strutil import softwrap
 
 logger = logging.getLogger(__name__)
 
-BASE_PR_BODY = softwrap(
+GH_TOKEN_VAR_NAME = "GH_TOKEN"
+
+PR_COMMENT_BODY = softwrap(
     """
     This PR is release preparation. Please read over the release notes and make adjustments for
     clarity for users, such as:
@@ -36,8 +40,6 @@ BASE_PR_BODY = softwrap(
     - fix typos
 
     Once satisfied, approve and merge, as normal.
-
-    ---
     """
 )
 
@@ -62,7 +64,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--publish",
         action="store_true",
-        help="Publish the changes: create a branch, commit, push, and create a pull request",
+        help=f"Publish the changes: create a branch, commit, push, and create a pull request. Set `{GH_TOKEN_VAR_NAME}` env var to an access token.",
     )
     return parser
 
@@ -126,6 +128,7 @@ def categorize(pr_num: str) -> Category | None:
         return category if isinstance(category, Category) else None
 
     # See: https://docs.github.com/en/rest/reference/pulls
+    # TODO: this could use PyGithub
     response = requests.get(f"https://api.github.com/repos/pantsbuild/pants/pulls/{pr_num}")
     if not response.ok:
         return complete_categorization(
@@ -280,7 +283,25 @@ def update_version(release_info: ReleaseInfo) -> None:
         VERSION_PATH.write_text(f"{release_info.version}\n")
 
 
-def commit_and_pr(release_info: ReleaseInfo, formatted: Formatted, release_manager: str) -> None:
+def get_github_auth() -> github.Auth.Token:
+    token = os.environ.get(GH_TOKEN_VAR_NAME)
+    if not token:
+        die(
+            f"Failed to find credentials in {GH_TOKEN_VAR_NAME} env var, please set this and try again"
+        )
+
+    return github.Auth.Token(token)
+
+def commit_and_pr(auth: github.Auth.Token, release_info: ReleaseInfo, formatted: Formatted, release_manager: str) -> None:
+    try:
+        gh = github.Github(auth=auth)
+        user = gh.get_user()
+        repo = gh.get_repo(MAIN_REPO_SLUG)
+    except Exception as e:
+        die(f"Failed to get Github info; is your token valid? {e}")
+    else:
+        print(f"Opening pull request as: @{user.login}", file=sys.stderr)
+
     title = f"Prepare {release_info.version}"
     branch = f"automation/release/{release_info.version}"
 
@@ -289,10 +310,25 @@ def commit_and_pr(release_info: ReleaseInfo, formatted: Formatted, release_manag
     git("commit", "-m", title)
     git("push", "origin", "HEAD")
 
+    pr = repo.create_pull(
+        title=title,
+        body=formatted.internal,
+        base="main",
+        head=branch,
+    )
+    pr.add_to_assignees(release_manager)
+    pr.add_to_labels("automation:release-prep", "category:internal")
+    pr.create_issue_comment(PR_COMMENT_BODY)
+
 
 def main() -> None:
     args = create_parser().parse_args()
     logging.basicConfig(level=args.log_level)
+
+    if args.publish:
+        gh_auth = get_github_auth()
+    else:
+        gh_auth = None
 
     release_info = ReleaseInfo.determine(args.new)
 
@@ -300,8 +336,8 @@ def main() -> None:
     update_contributors(release_info)
     update_version(release_info)
 
-    if args.publish:
-        commit_and_pr(release_info, formatted, args.release_manager)
+    if gh_auth is not None:
+        commit_and_pr(gh_auth, release_info, formatted, args.release_manager)
     else:
         print(
             f"When you create a pull request, include this in the description:\n\n{formatted.internal}",

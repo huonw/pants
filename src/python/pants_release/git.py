@@ -8,7 +8,8 @@ import subprocess
 
 logger = logging.getLogger(__name__)
 
-MAIN_REPO = "https://github.com/pantsbuild/pants"
+MAIN_REPO_SLUG = "pantsbuild/pants"
+MAIN_REPO = f"https://github.com/{MAIN_REPO_SLUG}"
 
 
 def _run(
