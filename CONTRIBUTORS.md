@@ -27,6 +27,7 @@ Created as part of the release process.
 + Bill Farner
 + Billy "Hyun Joon" Seol
 + Blaž Šnuderl
++ Bob Gregory
 + Borja Lorente
 + Brandon Milton
 + Brian Larson
@@ -100,6 +101,7 @@ Created as part of the release process.
 + Gabriel Gonzalez
 + Garrett Malmquist
 + Gary M. Josack
++ Gerald Spencer
 + Gordon Cassie
 + Greg Shuflin
 + Grzegorz Kossakowski
@@ -148,6 +150,7 @@ Created as part of the release process.
 + Jonathan D. Simms
 + Jonathan Sokolowski
 + Joseph Tilahun
++ Josh Cannon
 + Josh Reed
 + Josh Soref
 + Josh Suereth
@@ -310,6 +313,7 @@ Created as part of the release process.
 + eugene yokota
 + hephex
 + philipp-sontag-by
++ sww
 + twunderlich-grapl
 + wimax-grapl
 + Ólafur Páll Geirsson
