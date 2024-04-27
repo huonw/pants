@@ -12,7 +12,7 @@ from typing import Iterable
 from pants.backend.python.util_rules import pex
 from pants.backend.python.util_rules.pex import PexRequest, VenvPex, VenvPexProcess
 from pants.core.goals.lint import LintResult, LintTargetsRequest
-from pants.core.util_rules.partitions import Partition, Partitions
+from pants.core.util_rules.partitions import Partitions
 from pants.core.util_rules.source_files import SourceFiles, SourceFilesRequest
 from pants.engine.addresses import Address
 from pants.engine.fs import (
@@ -142,14 +142,14 @@ async def partition(
     )
 
     # partition by the sets of configs that apply to each input
-    by_config = defaultdict(list)
-    for field_set, configs in zip(request.field_sets, all_configs):
-        if configs:
-            by_config[configs].append(field_set)
-
-    return Partitions(
-        Partition(tuple(field_sets), PartitionMetadata(configs, ignore_files.snapshot))
-        for configs, field_sets in by_config.items()
+    return Partitions.partition_by_config(
+        (
+            (field_set, configs)
+            for field_set, configs in zip(request.field_sets, all_configs)
+            # don't run on any files for which there's no configuration file
+            if configs
+        ),
+        make_metadata=lambda _, configs: PartitionMetadata(configs, ignore_files.snapshot),
     )
 
 
