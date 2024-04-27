@@ -6,9 +6,10 @@
 from __future__ import annotations
 
 import itertools
+from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum
-from typing import Generic, Iterable, Protocol, TypeVar, overload
+from typing import Callable, Generic, Iterable, Protocol, TypeVar, overload
 
 from pants.core.goals.multi_tool_goal_helper import SkippableSubsystem
 from pants.engine.collection import Collection
@@ -81,6 +82,7 @@ class _EmptyMetadata:
 
 PartitionMetadataT = TypeVar("PartitionMetadataT", bound=PartitionMetadata)
 PartitionElementT = TypeVar("PartitionElementT")
+PartitionConfigT = TypeVar("PartitionConfigT")
 
 
 @dataclass(frozen=True)
@@ -141,6 +143,37 @@ class Partitions(Collection[Partition[PartitionElementT, PartitionMetadataT]]):
     ) -> Partitions:
         """Helper constructor for implementations that have only one partition."""
         return Partitions([Partition(tuple(elements), metadata or _EmptyMetadata())])
+
+    @classmethod
+    def partition_by_config(
+        cls,
+        elements: Iterable[tuple[PartitionElementT, PartitionConfigT]],
+        make_metadata: Callable[
+            [tuple[PartitionElementT, ...], PartitionConfigT], PartitionMetadataT
+        ],
+    ) -> Partitions[PartitionElementT, PartitionMetadataT]:
+        """Helper constructor for partitioning "by config", such as multiple config files.
+
+        The `elements` input should be a sequence of elements for partitioning `PartitionElementT`
+        and the configuration that matches `PartitionConfigT`. These will be grouped on equal
+        configuration, creating partitions with metadata from `make_metadata`.
+        """
+
+        by_config = defaultdict(list)
+        for element, config in elements:
+            by_config[config].append(element)
+
+        def make_partition(
+            elements: list[PartitionElementT], config: PartitionConfigT
+        ) -> Partition[PartitionElementT, PartitionMetadataT]:
+            elements_ = tuple(elements)
+            metadata = make_metadata(elements_, config)
+
+            return Partition(elements=elements_, metadata=metadata)
+
+        return Partitions(
+            make_partition(elements, config) for config, elements in by_config.items()
+        )
 
 
 @dataclass(frozen=True)
