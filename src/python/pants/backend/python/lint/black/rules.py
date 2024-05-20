@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import cast
 
 from pants.backend.python.lint.black.subsystem import Black, BlackFieldSet
@@ -75,6 +76,13 @@ async def partition_black(
 ) -> Partitions:
     if black.skip:
         return Partitions()
+
+    config_file_dirs = {
+        os.path.dirname(field_set.source.file_path) for field_set in request.field_sets
+    }
+    config_files = await Get(
+        ConfigFiles, ConfigFilesRequest, black.config_request(config_file_dirs)
+    )
 
     # Black requires 3.6+ but uses the typed-ast library to work with 2.7, 3.4, 3.5, 3.6, and 3.7.
     # However, typed-ast does not understand 3.8+, so instead we must run Black with Python 3.8+

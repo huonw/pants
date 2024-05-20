@@ -95,7 +95,7 @@ class OrphanFilepathConfigBehavior(Enum):
 
 @dataclass(frozen=True)
 class GatheredConfigFilesByDirectories:
-    config_filename: str
+    # config_filename: str
     snapshot: Snapshot
     source_dir_to_config_file: FrozenDict[str, str]
 
