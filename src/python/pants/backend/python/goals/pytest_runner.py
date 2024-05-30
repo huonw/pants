@@ -250,6 +250,35 @@ async def validate_pytest_cov_included(_pytest: PyTest):
         )
 
 
+@dataclass(frozen=True)
+class LocalDistsAndPreparedSourcesRequest:
+    addresses: tuple[Address, ...]
+    interpreter_constraints: InterpreterConstraints
+
+
+@rule
+async def _local_dists_and_prepared_sources(
+    request: LocalDistsAndPreparedSourcesRequest,
+) -> tuple[PythonSourceFiles, LocalDistsPex]:
+    transitive_targets = await Get(TransitiveTargets, TransitiveTargetsRequest(request.addresses))
+    all_targets = transitive_targets.closure
+
+    prepared_sources = await Get(
+        PythonSourceFiles, PythonSourceFilesRequest(all_targets, include_files=True)
+    )
+
+    local_dists = await Get(
+        LocalDistsPex,
+        LocalDistsPexRequest(
+            addresses,
+            interpreter_constraints=request.interpreter_constraints,
+            sources=prepared_sources,
+        ),
+    )
+
+    return prepared_sources, local_dists
+
+
 @rule(level=LogLevel.DEBUG)
 async def setup_pytest_for_target(
     request: TestSetupRequest,
@@ -261,11 +290,7 @@ async def setup_pytest_for_target(
 ) -> TestSetup:
     addresses = tuple(field_set.address for field_set in request.field_sets)
 
-    transitive_targets, plugin_setups = await MultiGet(
-        Get(TransitiveTargets, TransitiveTargetsRequest(addresses)),
-        Get(AllPytestPluginSetups, AllPytestPluginSetupsRequest(addresses)),
-    )
-    all_targets = transitive_targets.closure
+    plugin_setups = await Get(AllPytestPluginSetups, AllPytestPluginSetupsRequest(addresses))
 
     interpreter_constraints = request.metadata.interpreter_constraints
 
@@ -276,10 +301,6 @@ async def setup_pytest_for_target(
 
     # Ensure that the empty extra output dir exists.
     extra_output_directory_digest_get = Get(Digest, CreateDigest([Directory(_EXTRA_OUTPUT_DIR)]))
-
-    prepared_sources_get = Get(
-        PythonSourceFiles, PythonSourceFilesRequest(all_targets, include_files=True)
-    )
 
     # Get the file names for the test_target so that we can specify to Pytest precisely which files
     # to test, rather than using auto-discovery.
@@ -294,26 +315,17 @@ async def setup_pytest_for_target(
     (
         pytest_pex,
         requirements_pex,
-        prepared_sources,
         field_set_source_files,
         field_set_extra_env,
         extra_output_directory_digest,
+        (prepared_sources, local_dists),
     ) = await MultiGet(
         pytest_pex_get,
         requirements_pex_get,
-        prepared_sources_get,
         field_set_source_files_get,
         field_set_extra_env_get,
         extra_output_directory_digest_get,
-    )
-
-    local_dists = await Get(
-        LocalDistsPex,
-        LocalDistsPexRequest(
-            addresses,
-            interpreter_constraints=interpreter_constraints,
-            sources=prepared_sources,
-        ),
+        local_dists_and_prepared_sources(addresses, interpreter_constraints),
     )
 
     pytest_runner_pex_get = Get(
