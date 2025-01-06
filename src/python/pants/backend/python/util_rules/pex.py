@@ -744,6 +744,11 @@ async def build_pex(
         # analysis).
         argv.append("--no-pre-install-wheels")
 
+        # --sh-boot is not the default because it was introduced late and not all machines will have
+        # POSIX-compliant /bin/sh... but Pants itself will almost certainly only work on those
+        # machines, so let's make things faster:
+        argv.append("--sh-boot")
+
     argv.append(f"--sources-directory={source_dir_name}")
 
     # Include any additional arguments and input digests required by the requirements.
