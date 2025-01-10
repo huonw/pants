@@ -1006,7 +1006,7 @@ class VenvPex:
     append_only_caches: FrozenDict[str, str] | None
     pex_filename: str
     pex: Script
-    python: Script
+    python: object
     bin: FrozenDict[str, Script]
     venv_rel_dir: str
 
@@ -1101,6 +1101,7 @@ async def create_venv_pex(
     abs_pex_root = PurePath(seed_info["pex_root"])
     abs_pex_path = PurePath(seed_info["pex"])
     venv_rel_dir = abs_pex_path.relative_to(abs_pex_root).parent
+    print(f"{venv_rel_dir=} from {abs_pex_root=}, {abs_pex_path=}")
 
     venv_script_writer = VenvScriptWriter.create(
         complete_pex_env=request.complete_pex_env,
