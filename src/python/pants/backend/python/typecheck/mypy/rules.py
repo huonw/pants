@@ -28,8 +28,7 @@ from pants.backend.python.util_rules.pex import (
     Pex,
     PexRequest,
     PexResolveInfo,
-    VenvPex,
-    VenvPexProcess,
+    PexProcess,
 )
 from pants.backend.python.util_rules.pex_from_targets import RequirementsPexRequest
 from pants.backend.python.util_rules.python_sources import (
@@ -82,19 +81,19 @@ class MyPyRequest(CheckRequest):
 async def _generate_argv(
     mypy: MyPy,
     *,
-    pex: VenvPex,
+    pex: Pex,
     cache_dir: str,
     venv_python: str,
     file_list_path: str,
     python_version: str | None,
 ) -> tuple[str, ...]:
-    args = [pex.pex.argv0, f"--python-executable={venv_python}", *mypy.args]
+    args = [pex.argv0, f"--python-executable={venv_python}", *mypy.args]
     if mypy.config:
         args.append(f"--config-file={mypy.config}")
     if python_version:
         args.append(f"--python-version={python_version}")
 
-    mypy_pex_info = await Get(PexResolveInfo, VenvPex, pex)
+    mypy_pex_info = await Get(PexResolveInfo, Pex, pex)
     mypy_info = mypy_pex_info.find("mypy")
     assert mypy_info is not None
     if mypy_info.version > packaging.version.Version("0.700") and python_version is not None:
@@ -179,7 +178,7 @@ async def mypy_typecheck_partition(
     )
 
     mypy_pex_get = Get(
-        VenvPex,
+        Pex,
         PexRequest,
         mypy.to_pex_request(
             interpreter_constraints=tool_interpreter_constraints,
@@ -211,8 +210,8 @@ async def mypy_typecheck_partition(
     # We could have directly asked the `PexFromTargetsRequest` to return a `VenvPex`, rather than
     # `Pex`, but that would mean missing out on sharing a cache with other goals like `test` and
     # `run`.
-    requirements_venv_pex_request = Get(
-        VenvPex,
+    requirements_pex_request = Get(
+        Pex,
         PexRequest(
             output_filename="requirements_venv.pex",
             internal_only=True,
@@ -224,8 +223,8 @@ async def mypy_typecheck_partition(
         PythonSourceFiles, PythonSourceFilesRequest(partition.root_targets.closure())
     )
 
-    closure_sources, requirements_venv_pex, file_list_digest = await MultiGet(
-        closure_sources_get, requirements_venv_pex_request, file_list_digest_request
+    closure_sources, requirements_pex, file_list_digest = await MultiGet(
+        closure_sources_get, requirements_pex_request, file_list_digest_request
     )
 
     py_version = config_file.python_version_to_autoset(
@@ -326,7 +325,7 @@ async def mypy_typecheck_partition(
                 file_list_digest,
                 first_party_plugins.sources_digest,
                 closure_sources.source_files.snapshot.digest,
-                requirements_venv_pex.digest,
+                requirements_pex.digest,
                 config_file.digest,
                 script_runner_digest,
             ]
@@ -355,7 +354,7 @@ async def mypy_typecheck_partition(
 
     process = await Get(
         Process,
-        VenvPexProcess(
+        PexProcess(
             mypy_pex,
             input_digest=merged_input_files,
             extra_env=env,
