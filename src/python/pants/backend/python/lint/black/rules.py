@@ -9,7 +9,7 @@ from pants.backend.python.lint.black.subsystem import Black, BlackFieldSet
 from pants.backend.python.subsystems.setup import PythonSetup
 from pants.backend.python.util_rules import pex
 from pants.backend.python.util_rules.interpreter_constraints import InterpreterConstraints
-from pants.backend.python.util_rules.pex import VenvPexProcess, create_venv_pex
+from pants.backend.python.util_rules.pex import PexProcess, create_pex
 from pants.core.goals.fmt import AbstractFmtRequest, FmtResult, FmtTargetsRequest, Partitions
 from pants.core.util_rules.config_files import find_config_file
 from pants.engine.fs import MergeDigests
@@ -30,8 +30,8 @@ async def _run_black(
     black: Black,
     interpreter_constraints: InterpreterConstraints,
 ) -> FmtResult:
-    black_pex_get = create_venv_pex(
-        **implicitly(black.to_pex_request(interpreter_constraints=interpreter_constraints))
+    black_pex_get = create_pex(
+        black.to_pex_request(interpreter_constraints=interpreter_constraints)
     )
     config_files_get = find_config_file(black.config_request(request.snapshot.dirs))
     black_pex, config_files = await concurrently(black_pex_get, config_files_get)
@@ -41,7 +41,7 @@ async def _run_black(
     )
     result = await execute_process_or_raise(
         **implicitly(
-            VenvPexProcess(
+            PexProcess(
                 black_pex,
                 argv=(
                     *(("--config", black.config) if black.config else ()),
