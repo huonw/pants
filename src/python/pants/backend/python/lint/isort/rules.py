@@ -8,10 +8,11 @@ from pants.backend.python.lint.isort.skip_field import SkipIsortField
 from pants.backend.python.lint.isort.subsystem import Isort
 from pants.backend.python.target_types import PythonSourceField
 from pants.backend.python.util_rules import pex
+from pants.backend.python.util_rules.pex_cli import PexPEX
 from pants.backend.python.util_rules.pex import (
-    VenvPexProcess,
-    create_venv_pex,
-    determine_venv_pex_resolve_info,
+    PexProcess,
+    create_pex,
+    determine_pex_resolve_info,
 )
 from pants.core.goals.fmt import FmtResult, FmtTargetsRequest
 from pants.core.util_rules.config_files import find_config_file
@@ -68,16 +69,16 @@ def generate_argv(
 
 @rule(desc="Format with isort", level=LogLevel.DEBUG)
 async def isort_fmt(
-    request: IsortRequest.Batch, isort: Isort, keep_sandboxes: KeepSandboxes
+    request: IsortRequest.Batch, isort: Isort, keep_sandboxes: KeepSandboxes, pex_pex: PexPEX
 ) -> FmtResult:
-    isort_pex_get = create_venv_pex(**implicitly(isort.to_pex_request()))
+    isort_pex_get = create_pex(isort.to_pex_request())
     config_files_get = find_config_file(isort.config_request(request.snapshot.dirs))
     isort_pex, config_files = await concurrently(isort_pex_get, config_files_get)
 
     # Isort 5+ changes how config files are handled. Determine which semantics we should use.
     is_isort5 = False
     if isort.config:
-        isort_pex_info = await determine_venv_pex_resolve_info(isort_pex)
+        isort_pex_info = await determine_pex_resolve_info(pex_pex, isort_pex)
         isort_info = isort_pex_info.find("isort")
         is_isort5 = isort_info is not None and isort_info.version.major >= 5
 
@@ -87,7 +88,7 @@ async def isort_fmt(
     description = f"Run isort on {pluralize(len(request.files), 'file')}."
     result = await execute_process_or_raise(
         **implicitly(
-            VenvPexProcess(
+            PexProcess(
                 isort_pex,
                 argv=generate_argv(request.files, isort, is_isort5=is_isort5),
                 input_digest=input_digest,
