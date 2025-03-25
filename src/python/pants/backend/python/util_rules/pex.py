@@ -330,6 +330,7 @@ class Pex:
     digest: Digest
     name: str
     python: PythonExecutable | None
+    sh_boot_entrypoint: str | None = None
 
 
 @dataclass(frozen=True)
@@ -416,9 +417,15 @@ class BuildPexResult:
     pex_filename: str
     digest: Digest
     python: PythonExecutable | None
+    sh_boot_entrypoint: str | None = None
 
     def create_pex(self) -> Pex:
-        return Pex(digest=self.digest, name=self.pex_filename, python=self.python)
+        return Pex(
+            digest=self.digest,
+            name=self.pex_filename,
+            python=self.python,
+            sh_boot_entrypoint=self.sh_boot_entrypoint,
+        )
 
 
 @dataclass
@@ -711,9 +718,71 @@ async def build_pex(
     argv = [
         "--output-file",
         request.output_filename,
-        *request.additional_args,
     ]
 
+    if request.internal_only:
+        # An internal-only PEX is generally designed to be run immediately on the current machine
+        # (or a compatible one when caching or remote-execution means build machine != current
+        # machine), and thus we can do various things to make it build and run faster, with less
+        # overhead.
+        #
+        # Relevant features of Pex:
+        #
+        # 1. Execution mode: zipapp (default) or venv (--venv=...)
+        #
+        # 2. Bootstrapping: using Python (default) or shell (--sh-boot)
+        #
+        # 3. Wheel installation: "pre-install" during build (default) or during execution
+        #    (--no-pre-install-wheels)
+        #
+        # 4. Layout: zipapp (default), packed or loose (--layout=...)
+        #
+        # 5. Using the `venv` tool:
+        #    The idea here would be to create a tool venv as a Process output and then use the tool
+        #    venv as an input digest for all tool invocations. This was tried and netted ~500ms of
+        #    overhead over raw venv use.
+        #
+        # We currently believe the best combination to be: venv execution, sh booting, no
+        # pre-installing of wheels and packed layout (avoiding the `venv` tool), which has O(1ms)
+        # overhead when the PEX_ROOT named cache is warm for the current machine, as we encourage
+        # with --seed=none.
+        #
+        # 1. Venv execution means that a pex creates venvs on the fly in PEX_ROOT, which Pants
+        #    configures as a named cache (i.e. shared from execution to execution, on a single
+        #    machine). When the venv is in the PEX_ROOT (warm), zipapp-execution seems to come
+        #    with an additional O(400ms) of overhead over venv-execution. When the venv is not in
+        #    the PEX_ROOT (cold), venv is likely slower (depending on the exact distributions).
+        #    (NB. using a named-cache side-steps the digest materialization overhead of feature 5.)
+        #
+        # 2. Using --sh-boot means executing the PEX takes O(1ms) to detect that a venv already
+        #    exists in PEX_ROOT and re-exec the entrypoint there. Using Python to bootstrap comes
+        #    with O(50ms) overhead (or more, depending on Python version), including things like the
+        #    time for the bootstrapping Python interpreter itself to start (before actually running
+        #    any of the bootstrap code itself).
+        #
+        # 3. Preinstalling wheels means building the pex can be much faster (depending on the
+        #    distributions). It slightly slows execution when the venv is not in the PEX_ROOT, but
+        #    we generally assume the PEX_ROOT is warm here. See
+        #    https://github.com/pex-tool/pex/issues/2292#issuecomment-1854582647 for analysis.
+        #
+        # 4. Layout packed means the building and _caching_ the pex can be much faster, by avoiding
+        #    needing to manipulate potentially thousands of files within each of the dependencies
+        #    (either unzipping all the wheels and re-zipping them with a --layout=zipapp pex, and
+        #    then caching that single huge blob, or just unzipping them and caching them
+        #    individually with a --layout=packed pex). Note that this is set in PexProcess.__init__.
+        #
+        # Historical note: Pants had its own version of --sh-boot (called VenvPex), but this was
+        # replaced by using the more-reliable upstream features.
+        argv.extend(
+            [
+                "--venv=prepend",
+                "--sh-boot",
+                "--seed=none",
+                "--no-pre-install-wheels",
+            ]
+        )
+
+    argv.extend(request.additional_args)
     argv.extend(pex_python_setup.argv)
 
     if request.main is not None:
@@ -738,17 +807,6 @@ async def build_pex(
     if request.pex_path:
         argv.extend(["--pex-path", ":".join(pex.name for pex in request.pex_path)])
 
-    if request.internal_only:
-        # An internal-only runs on a single machine, and pre-installing wheels is wasted work in
-        # that case (see https://github.com/pex-tool/pex/issues/2292#issuecomment-1854582647 for
-        # analysis).
-        argv.append("--no-pre-install-wheels")
-
-        # --sh-boot is not the default because it was introduced late and not all machines will have
-        # POSIX-compliant /bin/sh... but Pants itself will almost certainly only work on those
-        # machines, so let's make things faster:
-        argv.append("--sh-boot")
-
     argv.append(f"--sources-directory={source_dir_name}")
 
     # Include any additional arguments and input digests required by the requirements.
@@ -772,8 +830,10 @@ async def build_pex(
     output_directories: Iterable[str] | None = None
     if PexLayout.ZIPAPP == request.layout:
         output_files = [request.output_filename]
+        sh_boot_entrypoint = request.output_filename
     else:
         output_directories = [request.output_filename]
+        sh_boot_entrypoint = os.path.join(request.output_filename, "pex")
 
     result = await Get(
         ProcessResult,
@@ -804,6 +864,8 @@ async def build_pex(
         pex_filename=request.output_filename,
         digest=digest,
         python=pex_python_setup.python,
+        # FIXME: other pexes can be sh_boot too, but these ones are definitely so:
+        sh_boot_entrypoint=sh_boot_entrypoint if request.internal_only else None,
     )
 
 
@@ -1190,8 +1252,12 @@ class PexProcess:
 @rule
 async def setup_pex_process(request: PexProcess, pex_environment: PexEnvironment) -> Process:
     pex = request.pex
-    complete_pex_env = pex_environment.in_sandbox(working_directory=request.working_directory)
-    argv = complete_pex_env.create_argv(pex.name, *request.argv)
+    complete_pex_env = pex_environment.in_sandbox(
+        working_directory=request.working_directory
+    )
+    argv = complete_pex_env.create_argv(
+        pex.name, *request.argv, sh_boot_entrypoint=pex.sh_boot_entrypoint
+    )
     env = {
         **complete_pex_env.environment_dict(python=pex.python),
         **request.extra_env,

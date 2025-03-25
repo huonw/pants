@@ -212,13 +212,24 @@ class CompletePexEnvironment:
     def interpreter_search_paths(self) -> tuple[str, ...]:
         return self._pex_environment.interpreter_search_paths
 
-    def create_argv(self, pex_filepath: str, *args: str) -> tuple[str, ...]:
-        pex_relpath = (
-            os.path.relpath(pex_filepath, self._working_directory)
+    def _relpath(self, path: str) -> str:
+        return (
+            os.path.relpath(path, self._working_directory)
             if self._working_directory
-            else pex_filepath
+            else path
         )
-        return (self._pex_environment.bootstrap_python.path, pex_relpath, *args)
+
+    def create_argv(
+        self, pex_filepath: str, *args: str, sh_boot_entrypoint: None | str = None
+    ) -> tuple[str, ...]:
+        if sh_boot_entrypoint is not None:
+            exe_args = (self._relpath(sh_boot_entrypoint),)
+        else:
+            exe_args = (
+                self._pex_environment.bootstrap_python.path,
+                self._relpath(pex_filepath),
+            )
+        return (*exe_args, *args)
 
     def environment_dict(
         self, *, python: PythonExecutable | PythonBuildStandaloneBinary | None = None
