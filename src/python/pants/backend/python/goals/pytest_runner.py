@@ -31,8 +31,7 @@ from pants.backend.python.util_rules.pex import (
     Pex,
     PexRequest,
     PexRequirementsInfo,
-    VenvPex,
-    VenvPexProcess,
+    PexProcess,
 )
 from pants.backend.python.util_rules.pex_from_targets import RequirementsPexRequest
 from pants.backend.python.util_rules.pex_requirements import PexRequirements
@@ -318,7 +317,7 @@ async def setup_pytest_for_target(
     )
 
     pytest_runner_pex_get = Get(
-        VenvPex,
+        Pex,
         PexRequest(
             output_filename="pytest_runner.pex",
             interpreter_constraints=interpreter_constraints,
@@ -449,7 +448,7 @@ async def setup_pytest_for_target(
         )
     process = await Get(
         Process,
-        VenvPexProcess(
+        PexProcess(
             pytest_runner_pex,
             argv=(
                 *request.prepend_argv,
