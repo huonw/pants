@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from pathlib import PurePath
 
 from pants.backend.python.util_rules import pex
-from pants.backend.python.util_rules.pex import VenvPexProcess, create_venv_pex
+from pants.backend.python.util_rules.pex import PexProcess, create_pex
 from pants.core.goals.lint import LintResult, LintTargetsRequest
 from pants.core.util_rules.partitions import Partition, Partitions
 from pants.core.util_rules.source_files import SourceFilesRequest, determine_source_files
@@ -181,7 +181,7 @@ async def lint(
             **implicitly(PathGlobs(str(s) for s in request.partition_metadata.config_files))
         ),
         digest_to_snapshot(**implicitly(PathGlobs([_SEMGREPIGNORE_FILE_NAME]))),
-        create_venv_pex(**implicitly(semgrep.to_pex_request())),
+        create_pex(semgrep.to_pex_request()),
         determine_source_files(
             SourceFilesRequest(field_set.source for field_set in request.elements)
         ),
@@ -206,7 +206,7 @@ async def lint(
     # --error/checking exit codes, which FixResult doesn't currently support.
     result = await execute_process(
         **implicitly(
-            VenvPexProcess(
+            PexProcess(
                 semgrep_pex,
                 argv=(
                     "scan",
@@ -221,7 +221,7 @@ async def lint(
                     # pick up other files if the names match. The highest risk of this is within the
                     # semgrep PEX.
                     *(f"--include={f}" for f in input_files.files),
-                    f"--exclude={semgrep_pex.pex_filename}",
+                    f"--exclude={semgrep_pex.name}",
                 ),
                 extra_env={
                     "SEMGREP_FORCE_COLOR": "true",
