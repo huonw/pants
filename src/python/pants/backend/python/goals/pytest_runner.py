@@ -30,6 +30,7 @@ from pants.backend.python.util_rules.lockfile_metadata import (
 from pants.backend.python.util_rules.pex import (
     Pex,
     PexRequest,
+    PexForRunningRequest,
     PexRequirementsInfo,
     PexProcess,
 )
@@ -271,7 +272,7 @@ async def setup_pytest_for_target(
 
     requirements_pex_get = Get(Pex, RequirementsPexRequest(addresses))
     pytest_pex_get = Get(
-        Pex, PexRequest, pytest.to_pex_request(interpreter_constraints=interpreter_constraints)
+        Pex, PexForRunningRequest(pytest.to_pex_request(interpreter_constraints=interpreter_constraints))
     )
 
     # Ensure that the empty extra output dir exists.
@@ -318,13 +319,14 @@ async def setup_pytest_for_target(
 
     pytest_runner_pex_get = Get(
         Pex,
-        PexRequest(
+        PexForRunningRequest(
+    PexRequest(
             output_filename="pytest_runner.pex",
             interpreter_constraints=interpreter_constraints,
             main=pytest.main,
             internal_only=True,
             pex_path=[pytest_pex, requirements_pex, local_dists.pex, *request.additional_pexes],
-        ),
+        ),)
     )
     config_files_get = Get(
         ConfigFiles,
@@ -602,12 +604,12 @@ async def debugpy_python_test(
 ) -> TestDebugAdapterRequest:
     debugpy_pex = await Get(
         Pex,
-        PexRequest,
+        PexForRunningRequest(
         debugpy.to_pex_request(
             interpreter_constraints=InterpreterConstraints.create_from_compatibility_fields(
                 [field_set.interpreter_constraints for field_set in batch.elements], python_setup
             )
-        ),
+        ))
     )
 
     setup = await Get(

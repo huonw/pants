@@ -1200,6 +1200,47 @@ async def create_venv_pex(
 
 
 @dataclass(frozen=True)
+class PexForRunningRequest:
+    pex_request: PexRequest
+    site_packages_copies: bool = False
+
+    def __init__(
+        self,
+        pex_request: PexRequest,
+        site_packages_copies: bool = False,
+    ) -> None:
+        """A request for a PEX for immediate running
+
+        :param pex_request: The details of the desired PEX.
+        :param site_packages_copies: `True` to use copies (hardlinks when possible) of PEX
+            dependencies when installing them in the venv site-packages directory. By default this
+            is `False` and symlinks are used instead which is a win in the time and space dimensions
+            but results in a non-standard venv structure that does trip up some libraries.
+        """
+        object.__setattr__(self, "pex_request", pex_request)
+        object.__setattr__(self, "site_packages_copies", site_packages_copies)
+
+@rule
+async def create_pex_for_running(request: PexForRunningRequest, pex_environment: PexEnvironment) -> Pex:
+    pex_request=request.pex_request
+    request = dataclasses.replace(
+        pex_request,
+        additional_args=pex_request.additional_args
+        + (
+            "--venv=prepend",
+            "--sh-boot",
+            "--seed=none",
+            "--no-pre-install-wheels",
+            pex_environment.venv_site_packages_copies_option(
+                use_copies=request.site_packages_copies
+            ),
+        ),
+    )
+
+    return await create_pex(request)
+
+
+@dataclass(frozen=True)
 class PexProcess:
     pex: Pex
     argv: tuple[str, ...]
