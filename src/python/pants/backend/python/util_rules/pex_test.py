@@ -216,11 +216,13 @@ def test_pex_working_directory(rule_runner: RuleRunner, pex_type: type[Pex | Ven
                         content=textwrap.dedent(
                             """
                             import os
+                            import sys
                             cwd = os.getcwd()
                             print(f"CWD: {cwd}")
                             for path, dirs, _ in os.walk(cwd):
                                 for name in dirs:
                                     print(f"DIR: {os.path.relpath(os.path.join(path, name), cwd)}")
+                            print(f"PREFIX: {sys.prefix}")
                             """
                         ).encode(),
                     ),
@@ -266,16 +268,27 @@ def test_pex_working_directory(rule_runner: RuleRunner, pex_type: type[Pex | Ven
         if isinstance(pex_data.pex, VenvPex):
             # Request once to ensure that the directory is seeded, and then start a new session so
             # that the second run happens as well.
-            _ = rule_runner.request(ProcessResult, [process])
+            result = rule_runner.request(ProcessResult, [process])
             rule_runner.new_session("re-run-for-venv-pex")
             rule_runner.set_options(
                 ["--backend-packages=pants.backend.python"],
                 env_inherit={"PATH", "PYENV_ROOT", "HOME"},
             )
 
-            # Clear the cache.
-            venv_dir = os.path.join(named_caches_dir, "pex_root", pex_data.pex.venv_rel_dir)
+            # Clear the cache:
+
+            # Find the venv from the output:
+            venv_dir_mo = re.search(r"PREFIX: (.*)\n", result.stdout.decode())
+            assert venv_dir_mo is not None
+            venv_dir = venv_dir_mo.group(1)
+
+            # Check it looks about right: it should be a directory within the pex_root named cache:
             assert os.path.isdir(venv_dir)
+            pex_root = os.path.join(named_caches_dir, "pex_root")
+            print(f"{venv_dir=} {pex_root=}, {result.stdout.decode()=}")
+            assert os.path.commonpath([venv_dir, pex_root]) == pex_root
+
+            # And now delete!
             safe_rmtree(venv_dir)
 
         result = rule_runner.request(ProcessResult, [process])
