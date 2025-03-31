@@ -25,7 +25,6 @@ from pants.engine.process import InteractiveProcess, Process
 from pants.testutil.process_util import process_assertion
 from pants.testutil.python_rule_runner import PythonRuleRunner
 from pants.testutil.rule_runner import QueryRule
-from pants.util.frozendict import FrozenDict
 
 
 @pytest.fixture
@@ -104,6 +103,7 @@ def assert_package(
     expect_names: tuple[str, ...],
     expect_description: str,
     expect_process: Callable[[Process], None] | None,
+    expect_process_env_to_include: dict[str, str] | None = None,
 ) -> None:
     assert package.names == expect_names
     assert package.description == expect_description
@@ -111,8 +111,13 @@ def assert_package(
         assert package.process
         assert isinstance(package.process, InteractiveProcess)
         expect_process(package.process.process)
+
+        for k, v in (expect_process_env_to_include or {}).items():
+            assert package.process.process.env[k] == v
     else:
         assert package.process is None
+
+        assert expect_process_env_to_include is None
 
 
 def test_twine_upload(rule_runner, packages) -> None:
@@ -129,7 +134,7 @@ def test_twine_upload(rule_runner, packages) -> None:
         expect_description="@pypi",
         expect_process=process_assertion(
             argv=(
-                "./twine.pex_pex_shim.sh",
+                "twine.pex/pex",
                 "upload",
                 "--non-interactive",
                 "--config-file=.pypirc",
@@ -137,13 +142,11 @@ def test_twine_upload(rule_runner, packages) -> None:
                 "my-package-0.1.0.tar.gz",
                 "my_package-0.1.0-py3-none-any.whl",
             ),
-            env=FrozenDict(
-                {
-                    "TWINE_USERNAME": "whoareyou",
-                    "TWINE_PASSWORD": "secret",
-                }
-            ),
         ),
+        expect_process_env_to_include={
+            "TWINE_USERNAME": "whoareyou",
+            "TWINE_PASSWORD": "secret",
+        },
     )
     assert_package(
         result[1],
@@ -154,7 +157,7 @@ def test_twine_upload(rule_runner, packages) -> None:
         expect_description="@private",
         expect_process=process_assertion(
             argv=(
-                "./twine.pex_pex_shim.sh",
+                "twine.pex/pex",
                 "upload",
                 "--non-interactive",
                 "--config-file=.pypirc",
@@ -162,8 +165,8 @@ def test_twine_upload(rule_runner, packages) -> None:
                 "my-package-0.1.0.tar.gz",
                 "my_package-0.1.0-py3-none-any.whl",
             ),
-            env=FrozenDict({"TWINE_USERNAME": "whoami"}),
         ),
+        expect_process_env_to_include={"TWINE_USERNAME": "whoami"},
     )
 
 

@@ -824,7 +824,7 @@ def test_debug_adaptor_request_argv(rule_runner: PythonRuleRunner) -> None:
     request = rule_runner.request(TestDebugAdapterRequest, [_get_pytest_batch(rule_runner, [tgt])])
     assert request.process is not None
     assert request.process.process.argv == (
-        "./pytest_runner.pex_pex_shim.sh",
+        "pytest_runner.pex/pex",
         "--listen",
         "127.0.0.1:5678",
         "-c",
