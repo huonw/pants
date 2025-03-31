@@ -51,6 +51,7 @@ from pants.backend.python.util_rules.pex_requirements import (
     ResolvePexConfigRequest,
     validate_metadata,
 )
+from pants.base.deprecated import CodeRemovedError
 from pants.build_graph.address import Address
 from pants.core.target_types import FileSourceField, ResourceSourceField
 from pants.core.util_rules.environments import EnvironmentTarget
@@ -984,7 +985,29 @@ class VenvPex:
     pex: Script
     python: Script
     bin: FrozenDict[str, Script]
-    venv_rel_dir: str
+
+    @property
+    def venv_rel_dir(self) -> str:
+        raise CodeRemovedError(
+            softwrap(
+                f"""`{VenvPex.__name__}.venv_rel_dir` has been replaced by querying a rule for `{VenvPexVenvPath.__name__}`
+
+                The `{VenvPex.__name__}.venv_rel_dir` pre-computed property has been replaced by executing the PEX and determining
+                the venv directory dynamically. This is more accurate but not perfect: if you can, execute an executable
+                directly, rather than manipulating venv paths in rule code. (That is, use one of the scripts at
+                `VenvPex.pex`, `VenvPex.python` or `VenvPex.bin`.)
+
+                To upgrade code using `some_venv_pex.venv_rel_dir` without switching to a better approach, query for
+                `{VenvPexVenvPath.__name__}` and access `abs_path`. To query:
+
+                - using `Get`: `await Get({VenvPexVenvPath.__name__}, {VenvPex.__name__}, some_venv_pex)`
+
+                - using call-by-name: `await {venv_pex_materialize_and_extract_venv_path.__name__}(some_venv_pex)`
+
+                (In either case, import the type/function from `{__name__}`.)
+                """
+            )
+        )
 
 
 @dataclass(frozen=True)
@@ -1100,7 +1123,6 @@ async def create_venv_pex(
         pex=pex.script,
         python=python.script,
         bin=FrozenDict((bin_name, venv_script.script) for bin_name, venv_script in scripts.items()),
-        venv_rel_dir="FIXME",
     )
 
 
