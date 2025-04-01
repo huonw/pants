@@ -137,6 +137,7 @@ async def _create_python_source_run_request(
 async def _create_python_source_run_dap_request(
     regular_run_request: RunRequest,
     *,
+    debugpy_pex: Pex,
     debugpy: DebugPy,
     debug_adapter: DebugAdapterSubsystem,
     run_in_sandbox: bool,
@@ -180,6 +181,7 @@ async def _create_python_source_run_dap_request(
             [
                 regular_run_request.digest,
                 launcher_digest,
+                debugpy_pex.digest,
             ]
         ),
     )
@@ -196,7 +198,12 @@ async def _create_python_source_run_dap_request(
     # We fix this by monkeypatching pydevd (the library powering debugpy) so that a remoteRoot of "."
     # means the sandbox root.
     # See https://github.com/fabioz/PyDev.Debugger/pull/243 for a better solution.
-    extra_env["PANTS_CHROOT"] = _in_chroot("").rstrip("/") if run_in_sandbox else "."
+    chroot = _in_chroot("").rstrip("/") if run_in_sandbox else "."
+    extra_env["PANTS_CHROOT"] = chroot
+
+    existing_pex_path = p.split(os.pathsep) if (p := extra_env.get("PEX_PATH")) else []
+    extra_env["PEX_PATH"] = os.pathsep.join([os.path.join(chroot, debugpy_pex.name), *existing_pex_path])
+
     args = [
         *regular_run_request.args,
         _in_chroot("__debugpy_launcher.py"),

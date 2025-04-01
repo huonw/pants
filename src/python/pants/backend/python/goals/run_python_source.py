@@ -119,13 +119,13 @@ async def create_python_source_debug_adapter_request(
         entry_point_field=PexEntryPointField(field_set.source.value, field_set.address),
         executable=field_set._executable_main(),
         pex_env=pex_env,
-        pex_path=[debugpy_pex],
         run_in_sandbox=run_in_sandbox,
     )
 
     return await _create_python_source_run_dap_request(
         run_request,
         debugpy=debugpy,
+        debugpy_pex=debugpy_pex,
         debug_adapter=debug_adapter,
         run_in_sandbox=run_in_sandbox,
     )

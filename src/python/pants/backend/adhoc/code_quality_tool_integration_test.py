@@ -97,7 +97,7 @@ def test_lint_tool():
                                 print(f"{fpath}:{i + 1} found {badcode_string}")
                                 failed = True
             if failed:
-                sys.exit(1)
+                sys.exit(47)
             """
             ),
             "build-support/badcode.conf": "badcode,brokencode,sillycode",
@@ -108,6 +108,7 @@ def test_lint_tool():
     )
 
     res = rule_runner.run_goal_rule(Lint, args=["::"])
+    print(f"{res.stdout=} {res.stderr=}")
     assert res.exit_code == 0
     assert "nobadcode succeeded" in res.stderr
 
